@@ -4,11 +4,19 @@ import { AmplifyAuthenticator, AmplifyAuthContainer, AmplifySignIn, AmplifySignO
 import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
 import NotesApp from './NotesApp';
 
-const AuthStateApp = () => {
-  const [authState, setAuthState] = React.useState();
-  const [user, setUser] = React.useState();
+import styled from 'styled-components'
 
-  React.useEffect(() => {
+const SignOut = styled.div`
+  max-width: 150px;
+  margin: auto;
+  margin-right: 0;
+`;
+
+const AuthStateApp = () => {
+  const [authState, setAuthState] = useState();
+  const [user, setUser] = useState();
+
+  useEffect(() => {
       return onAuthUIStateChange((nextAuthState, authData) => {
           setAuthState(nextAuthState);
           setUser(authData)
@@ -17,19 +25,24 @@ const AuthStateApp = () => {
 
 return authState === AuthState.SignedIn && user ? (
     <div className="App">
+        <SignOut>
+          <AmplifySignOut />
+        </SignOut>
         <NotesApp username={user.username} />
-        <AmplifySignOut />
     </div>
   ) : (
-    <AmplifyAuthContainer>
-        <AmplifyAuthenticator usernameAlias="email">
-          <AmplifySignIn
-            hideSignUp="true"
-            usernameAlias="email"
-            slot="sign-in"
-          ></AmplifySignIn>
-        </AmplifyAuthenticator>
-    </AmplifyAuthContainer>
+    <div className="App">
+      <h1>Notes App</h1>
+      <AmplifyAuthContainer>
+          <AmplifyAuthenticator usernameAlias="email">
+            <AmplifySignIn
+              hideSignUp="true"
+              usernameAlias="email"
+              slot="sign-in"
+              ></AmplifySignIn>
+          </AmplifyAuthenticator>
+      </AmplifyAuthContainer>
+    </div>
 );
 }
 
