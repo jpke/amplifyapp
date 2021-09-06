@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { API, Storage } from 'aws-amplify';
 import { listNotes } from './graphql/queries';
+import {AmplifyS3Image} from "@aws-amplify/ui-react";
 import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
+import './NotesApp.css';
 
 const initialFormState = { name: '', description: '' }
 
@@ -27,7 +29,7 @@ function NotesApp({username}) {
     await Promise.all(notesFromAPI.map(async note => {
       if (note.image) {
         const image = await Storage.get(note.image);
-        note.image = image;
+        note.storedImage = image;
       }
       return note;
     }))
@@ -77,7 +79,7 @@ function NotesApp({username}) {
               <p>{note.description}</p>
               <button onClick={() => deleteNote(note)}>Delete note</button>
               {
-                note.image && <img alt={note.name} src={note.image} style={{width: 400}} />
+                note.image && <AmplifyS3Image imgKey={note.image} />
               }
             </div>
           ))
